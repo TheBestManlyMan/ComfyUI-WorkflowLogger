@@ -27,24 +27,34 @@ If ID exists in CSV, replaces that row. Otherwise appends new row.
 
 ## Image Batch Sampler
 
-Samples evenly-spaced images from a batch.
+Samples images from a batch using two modes.
 
 ### Inputs
 
 - images (IMAGE batch)
-- count (number of images to sample)
+- count (number of images when using even spacing mode)
+- use_every_x (toggle between modes)
+- every_x (interval when using every X mode)
 
 ### Outputs
 
 - images (sampled IMAGE batch)
 
-### Behavior
+### Modes
 
-Samples images evenly across the batch. For example:
-- 10 images, count 5: returns indices [0, 2, 4, 6, 8]
-- 100 images, count 2: returns indices [0, 50]
+**Even Spacing Mode (use_every_x = False):**
+- Samples evenly across the batch
+- Uses count parameter
+- Examples:
+  - 10 frames, count 5: returns [0, 2, 4, 6, 8]
+  - 100 frames, count 2: returns [0, 50]
 
-If count is greater than batch size, returns all images.
+**Every X Mode (use_every_x = True):**
+- Samples every X frames
+- Uses every_x parameter
+- Examples:
+  - 10 frames, every 3: returns [0, 3, 6, 9]
+  - 20 frames, every 5: returns [0, 5, 10, 15]
 
 ## Installation
 
