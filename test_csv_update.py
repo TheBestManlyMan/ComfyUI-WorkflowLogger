@@ -17,7 +17,7 @@ class MockFolderPaths:
 sys.modules['folder_paths'] = MockFolderPaths()
 
 # Now import the node
-from __init__ import WorkflowLoggerNode
+from workflow_logger import WorkflowLoggerNode
 
 def test_csv_logger():
     """Test the CSV logger with id replacement functionality"""
