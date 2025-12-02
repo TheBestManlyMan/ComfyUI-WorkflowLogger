@@ -58,18 +58,18 @@ class WorkflowLoggerNode:
     def log_to_csv(self, id, prompt, prompt1, prompt_neg, csv_filename, shift="", seed=""):
         """
         Logs the workflow data to a CSV file in ComfyUI's output folder.
-        Automatically continues from existing file or creates new one.
+        If id already exists, replaces that row. Otherwise, appends a new row.
         """
         try:
             # Use ComfyUI's output directory
             output_dir = folder_paths.get_output_directory()
             csv_path = os.path.join(output_dir, csv_filename)
-            
-            # Check if file exists to determine if we need to write headers
-            file_exists = os.path.isfile(csv_path)
-            
-            # Prepare the data row
-            row_data = {
+
+            # Define fieldnames
+            fieldnames = ['id', 'prompt', 'prompt1', 'prompt_neg', 'shift', 'seed']
+
+            # Prepare the new data row
+            new_row = {
                 'id': id,
                 'prompt': prompt,
                 'prompt1': prompt1,
@@ -77,23 +77,38 @@ class WorkflowLoggerNode:
                 'shift': shift,
                 'seed': seed
             }
-            
-            # Write to CSV (append mode - continues from where it left off)
-            with open(csv_path, 'a', newline='', encoding='utf-8-sig') as csvfile:
-                fieldnames = ['id', 'prompt', 'prompt1', 'prompt_neg', 'shift', 'seed']
+
+            # Read existing data if file exists
+            existing_rows = []
+            file_exists = os.path.isfile(csv_path)
+            id_found = False
+
+            if file_exists:
+                with open(csv_path, 'r', newline='', encoding='utf-8-sig') as csvfile:
+                    reader = csv.DictReader(csvfile)
+                    for row in reader:
+                        if row.get('id') == id:
+                            # Replace the existing row with new data
+                            existing_rows.append(new_row)
+                            id_found = True
+                        else:
+                            existing_rows.append(row)
+
+            # If id wasn't found or file doesn't exist, append the new row
+            if not id_found:
+                existing_rows.append(new_row)
+
+            # Write all data back to CSV
+            with open(csv_path, 'w', newline='', encoding='utf-8-sig') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                
-                # Write header if file is new
-                if not file_exists:
-                    writer.writeheader()
-                
-                # Write the data row
-                writer.writerow(row_data)
-            
-            status_msg = f"✓ Logged to {csv_path}"
+                writer.writeheader()
+                writer.writerows(existing_rows)
+
+            action = "Updated" if id_found else "Added"
+            status_msg = f"✓ {action} id '{id}' in {csv_path}"
             print(status_msg)
             return (status_msg,)
-            
+
         except Exception as e:
             error_msg = f"✗ Error logging to CSV: {str(e)}"
             print(error_msg)
