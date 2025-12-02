@@ -56,6 +56,31 @@ Samples images from a batch using two modes.
   - 10 frames, every 3: returns [0, 3, 6, 9]
   - 20 frames, every 5: returns [0, 5, 10, 15]
 
+## String to Boolean
+
+Converts string input to boolean value.
+
+### Inputs
+
+- text (STRING): Input text from LLM or other source
+
+### Outputs
+
+- BOOLEAN: True if text is "yes", False otherwise
+
+### Behavior
+
+- Strips leading and trailing spaces
+- Case insensitive (YES, Yes, yes all return True)
+- Returns True only if cleaned text equals "yes"
+- Returns False for "no" or any other input
+
+Examples:
+- "yes" → True
+- "  Yes  " → True
+- "no" → False
+- "  NO  " → False
+
 ## Installation
 
 ```bash
