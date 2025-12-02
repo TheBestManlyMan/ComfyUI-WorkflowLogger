@@ -1,0 +1,16 @@
+{
+  "comment": "Example ComfyUI workflow using Workflow Logger node",
+  "description": "This is a simplified example showing how to use the Workflow Logger node. Connect your actual workflow nodes to these inputs.",
+  "example_connections": {
+    "video_input": "Connect video loader node → filename output → id input",
+    "prompt_input": "Connect text node or prompt builder → prompt input", 
+    "prompt1_input": "Connect text node → prompt1 input",
+    "prompt_neg_input": "Connect text node → prompt_neg input"
+  },
+  "tips": [
+    "Use the same csv_filename across multiple runs to build a dataset",
+    "The node will auto-create the CSV file on first run",
+    "Each workflow execution appends one row to the CSV",
+    "Check ComfyUI/custom_nodes/ComfyUI-WorkflowLogger/output/ for your CSV files"
+  ]
+}
